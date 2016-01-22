@@ -1,0 +1,29 @@
+= Type Annotation Scanner
+
+Simple experiment that explores how optimally you can unpack
+bytecode when you only have a single purpose.  In this case
+the purpose is discovering whether a class has a particular type annotation.
+
+In this scenario there is no need to look at classnames, interfaces, etc. 
+The only thing of interest is the type annotations.
+By passing the name of the annotation we are looking for down into the
+code unpacking the class it is possible to do very minimal
+unpacking of bytecode data to determine if the type has that
+annotation or not.  If the code that is
+unpacking the UTF8 encoded data referenced in the class constant
+pool knows the string it is trying to find it can
+halt unpacking as soon as it knows what it is unpacking
+cannot possibly match the string being searched for. This saves fully
+unpacking UTF8 data and then checking if it matches.
+
+This code also serves as a nice reference sample for how classfiles
+are parsed.
+
+Usage:
+
+    byte[] bs = classfilebytes;
+    String annotationTypeInternalName = "Ljava/lang/FunctionalInterface;";
+    boolean isRuntimeRetention = true; 
+    boolean found = TypeAnnotationScanner.scanClassBytesForAnnotation(bs, annotationTypeInternalName, isRuntimeRetention);
+    
+See the `Simulator` class for example usage and some crude benchmarks.
